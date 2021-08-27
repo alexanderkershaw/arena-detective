@@ -5,23 +5,14 @@
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
 -- Define the getEscapeString function first so we can refer to it early.
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
-
 -- Get an escape string that shows an icon. 
 function aura_env.getEscapeString(iconID, height, width)
     return  "|T" .. iconID .. ":" ..
     height .. ":" .. width .. ":0:0|t"
 end
 
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
--- Specify covenant icon IDs as we use these alot. 
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
+-- Specify covenant icon IDs as we refer to these alot. 
 local icons = {
     ["kyrian"] = 3257748,
     ["necrolord"] = 3257749,
@@ -141,6 +132,7 @@ aura_env.spellList =  {
         trackFor = {"all"},
         notificationType = 3,
     },
+
     ---------------------------------------------------------------------------
     -- Signature covenant abilities.
     ---------------------------------------------------------------------------
@@ -693,20 +685,20 @@ aura_env.auraList =  {
     },
     
     -- Atonement: used to check for Trinity
-    [194384] = {
-        text = "UN_USED", 
-        icon = 537078, -- Trinity icon
-        trackFor = {"all"},
-        notificationType = 4,
-    },
+    -- [194384] = {
+    --    text = "UN_USED", 
+    --    icon = 537078, -- Trinity icon
+    --    trackFor = {"all"},
+    --    notificationType = 4,
+    --},
     
     -- Kidney Shot: used to check for Deeper Strategem.
-    [408]    = {
-        text = "UN_USED", 
-        icon = 644377, -- Deeper Strategem icon 
-        trackFor = {"all"},
-        notificationType = 3,
-    },
+    -- [408]    = {
+    --    text = "UN_USED", 
+    --    icon = 644377, -- Deeper Strategem icon 
+    --    trackFor = {"all"},
+    --    notificationType = 3,
+    --},
     
     -- Badge
     [345228] = {
@@ -862,6 +854,14 @@ aura_env.auraList =  {
 
     -- Thrill Seeker
     [331939] = {
+        text = "Venthyr",
+        icon = icons["venthyr"],
+        trackFor = {"all"},
+        notificationType = 2,
+    },
+
+    -- Mad Duke's Tea (Theotar)
+    [353266] = {
         text = "Venthyr",
         icon = icons["venthyr"],
         trackFor = {"all"},
@@ -1254,7 +1254,7 @@ function aura_env.setupEnemies()
     aura_env.debugLogger("exit setupEnemies")
 end
 
--- Scan auras, called when gates open.
+-- Scan all enemy teams auras, called when gates open.
 function aura_env.scanTeam()    
     aura_env.debugLogger("enter scanTeam")
 
@@ -1267,10 +1267,10 @@ function aura_env.scanTeam()
         end
     end
     
-    aura_env.debugLogger("exit scanscanTeamAuras")
+    aura_env.debugLogger("exit scanTeamAuras")
 end
 
--- Scan auras, called when gates open.
+-- Scan a units auras.
 function aura_env.scanUnitAuras(arenaIndex)    
     aura_env.debugLogger("enter scanUnitAuras")
 
@@ -1294,4 +1294,3 @@ function aura_env.scanUnitAuras(arenaIndex)
 
     aura_env.debugLogger("exit scanUnitAuras")
 end
-
