@@ -16,9 +16,12 @@ end
 local icons = {
     ["kyrian"] = 3257748,
     ["necrolord"] = 3257749,
-    ["venthyr"] = 3257751, 
     ["nightfae"] = 3257750,
+    ["venthyr"] = 3257751, 
 }
+
+-- Get the players realm. 
+aura_env.realmName = GetRealmName()
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
@@ -947,6 +950,22 @@ function aura_env.getArenaIndex(sourceGUID)
     return false
 end
 
+-- Get arena index of by name. 
+function aura_env.getArenaIndexByName(name)
+    
+    aura_env.debugLogger("enter getAregetArenaIndexByNamenaIndex")    
+    
+    for i = 1, aura_env.numOpponents do
+        if (name == UnitName("arena" .. i)) then
+            return i
+        end
+    end
+    
+    aura_env.debugLogger("exit getArenaIndexByName")  
+    
+    return false
+end
+
 -- Get unit by GUID, tries to match party/arena. 
 function aura_env.getUnitID(sourceGUID)
     
@@ -1007,6 +1026,11 @@ function aura_env.infoInsert(arenaIndex, item)
         -- Send a notification if criteria is met. 
         if (sendNotification) then
             aura_env.sendNotification(arenaIndex, item)
+        end
+
+        -- If this is a covenant detection, send it to memory module.
+        if (item.notificationType == 2) then
+            aura_env.addCovToMemory(arenaIndex, item)
         end
 
         aura_env.addToSet(aura_env.enemies[arenaIndex].info, insertStr)
@@ -1293,4 +1317,37 @@ function aura_env.scanUnitAuras(arenaIndex)
     end
 
     aura_env.debugLogger("exit scanUnitAuras")
+end
+
+-- Add an opponents covenant to memory.
+function aura_env.addCovToMemory(arenaIndex, item)    
+    aura_env.debugLogger("enter addCovToMemory")
+
+    local identifier    
+    local name = UnitName("arena" .. arenaIndex)
+
+    -- This table is used within this function for translating to  
+    -- an ID for sending to the memory module.
+    local covenantTable = {
+        [3257748] = 1,
+        [3257749] = 2, 
+        [3257751] = 3,
+        [3257752] = 4,
+    }
+
+    local covenantID = covenantTable[item.icon] 
+
+    -- Fire the event which the memory module is listening for. 
+    WeakAuras.ScanEvents("DETECTIVE_MEMORY_ADD", name, covenantID)
+
+    aura_env.debugLogger("exit addCovToMemory")
+    return
+end
+
+-- Request covenant information from the memory module. 
+function aura_env.requestMemory()    
+    aura_env.debugLogger("enter requestMemory")
+    WeakAuras.ScanEvents("DETECTIVE_MEMORY_REQUEST")
+    aura_env.debugLogger("exit requestMemory")
+    return
 end
